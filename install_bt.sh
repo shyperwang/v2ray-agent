@@ -584,7 +584,7 @@ server {
     location /test {return 200 'fjkvymb6len';}
 }
 EOF
-if
+fi
 }
 
 # 自定义/随机路径

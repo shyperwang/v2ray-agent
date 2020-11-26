@@ -430,7 +430,7 @@ installTools(){
         echoContent green " ---> 安装binutils"
         ${installType} binutils > /dev/null  2>&1
     fi
-    if [[ -z `find /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin |grep -v grep|grep -w nginx` ]]
+    if [[ -z `find /www/server /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin |grep -v grep|grep -w nginx` ]]
     then
         echoContent green " ---> 安装nginx"
         ${installType} nginx > /dev/null

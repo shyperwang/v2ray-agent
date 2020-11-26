@@ -190,7 +190,8 @@ installTools(){
         echoContent green " ---> 安装binutils"
         ${installType} binutils > /dev/null  2>&1
     fi
-    if [[ -z `find /www/server /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin |grep -v grep|grep -w nginx` ]]
+    # if [[ -z `find /www/server /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin |grep -v grep|grep -w nginx` ]]
+    if [[ -z `find /www/server |grep -v grep|grep -w nginx` ]]
     then
         echoContent green " ---> 安装nginx"
         ${installType} nginx > /dev/null
@@ -248,8 +249,8 @@ initTLSNginxConfig(){
     else
         # 修改配置
         echoContent green " ---> 配置Nginx"
-        touch /www/server/panel/vhost/nginx/alone.conf
-        echo "server {listen 80;server_name ${domain};root /www/wwwroot/proxy/html;location ~ /.well-known {allow all;}location /test {return 200 'fjkvymb6len';}}" > /www/server/panel/vhost/nginx/alone.conf
+        # touch /www/server/panel/vhost/nginx/alone.conf
+        # echo "server {listen 80;server_name ${domain};root /www/wwwroot/proxy/html;location ~ /.well-known {allow all;}location /test {return 200 'fjkvymb6len';}}" > /www/server/panel/vhost/nginx/alone.conf
         # 启动nginx
         handleNginx start
         echoContent yellow "\n检查IP是否设置为当前VPS"
@@ -333,15 +334,54 @@ installTLS(){
 initNginxConfig(){
     echoContent skyBlue "\n进度  $1/${totalProgress} : 配置Nginx"
     installType=$1
-
-        cat << EOF > /www/server/panel/vhost/nginx/alone.conf
-server {
-    listen 80;
-    server_name ${domain};
-    root /www/wwwroot/proxy/html;
-    location ~ /.well-known {allow all;}
-    location /test {return 200 'fjkvymb6len';}
-}
+    cat << EOF > /www/server/panel/vhost/nginx/alone.conf
+        server
+        {
+        listen 80;
+        server_name proxy.shyper.ga;
+        index index.php index.html index.htm default.php default.htm default.html;
+        root /www/wwwroot/proxy; 
+        #SSL-START SSL相关配置，请勿删除或修改下一行带注释的404规则
+        #error_page 404/404.html;
+        #SSL-END
+        #ERROR-PAGE-START  错误页配置，可以注释、删除或修改
+        #error_page 404 /404.html;
+        #error_page 502 /502.html;
+        #ERROR-PAGE-END       
+        #PHP-INFO-START  PHP引用配置，可以注释或修改
+        include enable-php-74.conf;
+        #PHP-INFO-END
+        #REWRITE-START URL重写规则引用,修改后将导致面板设置的伪静态规则失效
+        include /www/server/panel/vhost/rewrite/proxy.shyper.ga.conf;
+        #REWRITE-END
+        #禁止访问的文件或目录
+        location ~ ^/(\.user.ini|\.htaccess|\.git|\.svn|\.project|LICENSE|README.md)
+        {
+        return 404;
+        }
+        #一键申请SSL证书验证目录相关设置
+        location ~ \.well-known{
+        allow all;
+        }
+        location ~ .*\.(gif|jpg|jpeg|png|bmp|swf)$
+        {
+        expires      30d;
+        error_log /dev/null;
+        access_log off;
+        }
+        location ~ .*\.(js|css)?$
+        {
+        expires      12h;
+        error_log /dev/null;
+        access_log off; 
+        }
+        location /test 
+        {
+        return 200 'fjkvymb6len';
+        }
+        access_log  /www/wwwlogs/proxy.shyper.ga.log;
+        error_log  /www/wwwlogs/proxy.shyper.ga.error.log;
+        }
 EOF
 }
 # 自定义/随机路径

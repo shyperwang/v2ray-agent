@@ -489,9 +489,10 @@ initTLSNginxConfig(){
             touch /www/server/panel/vhost/nginx/${domain}.conf
             echo "server {listen 80;server_name ${domain};root /www/wwwroot/${domain}/html;location ~ /.well-known {allow all;}location /test {return 200 '${domain}';}}" > /www/server/panel/vhost/nginx/${domain}.conf
         else
-            touch /etc/nginx/conf.d/alone.conf
-            echo "server {listen 80;server_name ${domain};root /usr/share/nginx/html;location ~ /.well-known {allow all;}location /test {return 200 '${domain}';}}" > /etc/nginx/conf.d/alone.conf
-        fi
+		touch /etc/nginx/conf.d/alone.conf
+		echo "server {listen 80;server_name ${domain};root /usr/share/nginx/html;location ~ /.well-known {allow all;}location /test {return 200 '${domain}';}}" > /etc/nginx/conf.d/alone.conf
+		eixt 0;
+	fi
         # 启动nginx
         handleNginx start
         echoContent yellow "\n检查IP是否设置为当前VPS"

@@ -485,6 +485,7 @@ initTLSNginxConfig(){
         # 修改配置
         echoContent green " ---> 配置Nginx"
         if [[ ! -z `find /www/server -name "nginx"` ]]
+	then
             touch /etc/nginx/conf.d/alone.conf
             echo "server {listen 80;server_name ${domain};root /usr/share/nginx/html;location ~ /.well-known {allow all;}location /test {return 200 ${domain};}}" > /etc/nginx/conf.d/alone.conf
         fi
@@ -571,6 +572,7 @@ installTLS(){
 initNginxConfig(){
     echoContent skyBlue "\n进度  $1/${totalProgress} : 配置Nginx"
     if [[ ! -z `find /www/server -name "nginx"` ]]
+    then
         cat << EOF > /etc/nginx/conf.d/alone.conf
 server {
     listen 80;
@@ -615,6 +617,7 @@ nginxBlog(){
 #    echoContent yellow "添加伪装博客--->"
     echoContent skyBlue "\n进度 $1/${totalProgress} : 添加伪装博客"
     if [[ ! -z `find /www/server -name "nginx"` ]]
+    then
         rm -rf /usr/share/nginx/html
         wget -q -P /usr/share/nginx https://raw.githubusercontent.com/mack-a/v2ray-agent/${branch}/fodder/blog/unable/html.zip > /dev/null
         unzip -o  /usr/share/nginx/html.zip -d /usr/share/nginx/html > /dev/null

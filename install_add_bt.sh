@@ -484,7 +484,7 @@ initTLSNginxConfig(){
     else
         # 修改配置
         echoContent green " ---> 配置Nginx"
-        if [[ ! -z `find /www/server |grep -v grep|grep -w nginx`]]
+        if [[ -n `find /www/server |grep -v grep|grep -w nginx`]]
         then
             touch /www/server/panel/vhost/nginx/${domain}.conf
             echo "server {listen 80;server_name ${domain};root /www/wwwroot/${domain}/html;location ~ /.well-known {allow all;}location /test {return 200 '${domain}';}}" > /www/server/panel/vhost/nginx/${domain}.conf

@@ -486,7 +486,7 @@ initTLSNginxConfig(){
         echoContent green " ---> 配置Nginx"
         if [[ ! -z `find /www/server -name "nginx"` ]]
             touch /etc/nginx/conf.d/alone.conf
-            echo "server {listen 80;server_name ${domain};root /usr/share/nginx/html;location ~ /.well-known {allow all;}location /test {return 200 '${domain}';}}" > /etc/nginx/conf.d/alone.conf
+            echo "server {listen 80;server_name ${domain};root /usr/share/nginx/html;location ~ /.well-known {allow all;}location /test {return 200 ${domain};}}" > /etc/nginx/conf.d/alone.conf
         fi
         # 启动nginx
         handleNginx start
